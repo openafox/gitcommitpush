@@ -13,6 +13,16 @@ You can currently install this directly from git:
 
 ```
 pip install git+https://github.com/sat28/githubcommit.git
+```
+
+Or clone from github and  install in develop mode to allow you to make edits
+(ideally in a virtualenv so sudo or --user in not needed):
+
+```
+git clone https://github.com/openafox/githubcommit.git
+python setup.py develop
+
+
 jupyter serverextension enable --py githubcommit
 jupyter nbextension install --py githubcommit
 ```

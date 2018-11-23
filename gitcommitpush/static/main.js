@@ -12,7 +12,9 @@ define(['base/js/namespace','base/js/dialog','jquery'],function(IPython, dialog,
             var p = $('<p/>').text("Please enter your commit message. Only this notebook will be committed.")
             var input = $('<textarea rows="4" cols="72"></textarea>')
             var div = $('<div/>')
+            var checkbox = '<input type="checkbox" id="add_all" name="feature" value="scales" checked /><label>Add all files including untracked?</label>'
 
+            div.append(checkbox)
             div.append(p)
                .append(input)
 
@@ -24,7 +26,8 @@ define(['base/js/namespace','base/js/dialog','jquery'],function(IPython, dialog,
                 var filepath = window.location.pathname.match(re)[1];
                 var payload = {
                              'filename': filepath,
-                             'msg': input.val()
+                             'msg': input.val(),
+                             'add_all': $("#add_all").prop('checked'),
                            };
                 var settings = {
                     url : '/git/commit',

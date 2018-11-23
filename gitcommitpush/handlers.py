@@ -35,8 +35,6 @@ class git_cnxn:
         if not self.remote_nm:
             self.remote_nm = "origin"
         self.access_token = os.path.expandvars(os.environ.get('GITHUB_ACCESS_TOKEN'))
-        self.add_all = bool(distutils.util.strtobool(
-            os.path.expandvars(os.environ.get('GIT_ADD_ALL'))))
         # get cwd
         self.cwd = os.getcwd()
 
@@ -72,12 +70,15 @@ class git_cnxn:
             remote = self.repo.remote(self.remote_nm)
         return remote
 
-    def add(self, filename):
+    def add(self, filename, add_all=False):
         """Performs git add of filename.
         Git returns nothing if good or no add
         """
         try:
-            print(self.repo.git.add(self.dir + filename))
+            print(self.repo.git.add(self.dir + filename, A=add_all))
+            if add_all:
+                print('Adding All')
+                print(self.repo.git.add(A=True))
             # filname from js includes '/' ex. '/name'
         except GitCommandError as e:
             print(e)
@@ -92,7 +93,7 @@ class git_cnxn:
         print('Staged:', staged)
         try:
             print(self.repo.git.commit(
-                a=self.add_all, m="{}\n\nUpdated {}".format(msg, staged) ))
+                m="{}\n\nUpdated {}".format(msg, staged) ))
         except GitCommandError as e:
             if 'directory clean' in str(e):
                 raise ErrorPrintToJupyter(
@@ -173,8 +174,10 @@ class GitCommitHandler(IPythonHandler):
             data = json.loads(self.request.body.decode('utf-8'))
             filename = urllib.parse.unquote(data['filename'])
             msg = data['msg']
+            add_all = data['add_all']
+
             git.pull()
-            git.add(filename)
+            git.add(filename, add_all)
             git.commit(msg)
             git.push()
             #git_pr()

@@ -47,6 +47,22 @@ https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html#insta
 * Configure ssh key (present in ~/.ssh/id_rsa.pub or specified location) in git(repo) account
 * Run jupyter notebook from within your repo directory
 
+## Suggestion - nbdime
+
+nbdime allows you to only track code changes and not outputs. It also gives a nice visual diff
+
+https://nbdime.readthedocs.io/en/latest/
+
+Example installation of nbdime:
+
+```
+pip install nbdime
+jupyter serverextension enable --py nbdime --sys-prefix
+jupyter nbextension install --py nbdime --sys-prefix
+jupyter nbextension enable --py nbdime --sys-prefix
+nbdime config-git --enable
+```
+
 ## Example git configuration
 export GIT_PARENT_DIR=~ <br />
 export GIT_REPO_NAME=gitjupyter <br />

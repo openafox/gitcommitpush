@@ -7,10 +7,12 @@ ssh-keygen -t rsa && ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub && eval 
 export GIT_PARENT_DIR=~
 export GIT_REPO_NAME=#your-repo
 export GIT_BRANCH_NAME=#your-branch
+export GIT_REMOTE_NAME=#your-branch (origin)
 export GIT_USER=#your-gituser
 export GIT_EMAIL=#your-email
 export GITHUB_ACCESS_TOKEN=#access-token from github developer settings
 export GIT_USER_UPSTREAM=#your-user
+export GIT_ADD_ALL=False
 
 
 ############################################################################

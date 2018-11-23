@@ -34,6 +34,9 @@ To enable this extension for all notebooks:
 jupyter nbextension enable --py gitcommitpush
 ```
 
+To enable in virtualenv append --sys-prefix to 3 commands above see:
+https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html#install-javascript-and-css-files
+
 ## Steps
 
 * Install package using above commands

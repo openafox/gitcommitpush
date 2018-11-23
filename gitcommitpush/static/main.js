@@ -1,5 +1,36 @@
 define(['base/js/namespace','base/js/dialog','jquery'],function(IPython, dialog, $, mc){
 
+    // get notebook container
+    var container = $('#notebook-container');
+
+    function success_msg(data) {
+        // display feedback to user
+        var container = $('#notebook-container');
+        var feedback =
+            '<div class="commit-feedback alert alert-success alert-dismissible" role="alert"> '
+            + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+            + '<span aria-hidden="true">&times;</span></button>'
+            + data.statusText
+            + ' </div>';
+
+        // display feedback
+        $('.commit-feedback').remove();
+        container.prepend(feedback);
+        };
+    function error_msg(data) {
+        // display feedback to user
+        var feedback =
+            '<div class="commit-feedback alert alert-danger alert-dismissible" role="alert">'
+            + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+            + '<span aria-hidden="true">&times;</span></button>'
+            + '<strong>Warning!</strong> Something went wrong.<div>'
+            + data.statusText
+            + '</div> </div>';
+        // display feedback
+        $('.commit-feedback').remove();
+        container.prepend(feedback);
+        };
+
     // we will define an action here that should happen when we ask to clear and restart the kernel.
     var git_commit_push  = {
         help: 'Commit current notebook and push to GitRepo',
@@ -28,6 +59,7 @@ define(['base/js/namespace','base/js/dialog','jquery'],function(IPython, dialog,
                              'filename': filepath,
                              'msg': input.val(),
                              'add_all': $("#add_all").prop('checked'),
+                             'pull': false,
                            };
                 var settings = {
                     url : '/git/commit',
@@ -36,33 +68,12 @@ define(['base/js/namespace','base/js/dialog','jquery'],function(IPython, dialog,
                     dataType: "json",
                     data: JSON.stringify(payload),
                     contentType: 'application/json',
-                    success: function(data) {
-
-                        // display feedback to user
-                        var container = $('#notebook-container');
-                        var feedback = '<div class="commit-feedback alert alert-success alert-dismissible" role="alert"> \
-                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> \
-                                          '+data.statusText+' \
-                                           \
-                                        </div>';
-
-                        // display feedback
-                        $('.commit-feedback').remove();
-                        container.prepend(feedback);
-                    },
-                    error: function(data) {
-
-                        // display feedback to user
-                        var feedback = '<div class="commit-feedback alert alert-danger alert-dismissible" role="alert"> \
-                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> \
-                                          <strong>Warning!</strong> Something went wrong. \
-                                          <div>'+data.statusText+'</div> \
-                                        </div>';
-
-                        // display feedback
-                        $('.commit-feedback').remove();
-                        container.prepend(feedback);
-                    }
+                    success: function(data){
+                        success_msg(data)
+                        },
+                    error: function(data){
+                        error_msg(data)
+                        },
                 };
 
                 // display preloader during commit and push
@@ -99,6 +110,35 @@ define(['base/js/namespace','base/js/dialog','jquery'],function(IPython, dialog,
 
         // add button for new action
         IPython.toolbar.add_buttons_group([action_name])
+
+        // do initial pull to make sure uptodate
+        var payload = {
+            'filename': 'None',
+            'msg': 'None',
+            'add_all': 'None',
+            'pull': true,
+            };
+        var settings = {
+                    url : '/git/commit',
+                    processData : false,
+                    type : "PUT",
+                    dataType: "json",
+                    data: JSON.stringify(payload),
+                    contentType: 'application/json',
+                    success: function(data){
+                        success_msg(data)
+                        },
+                    error: function(data){
+                        error_msg(data)
+                        },
+                };
+
+                // display preloader during commit and push
+                var preloader = '<img class="commit-feedback" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.8/ajax-loader.gif">';
+                container.prepend(preloader);
+
+                // commit and push
+                $.ajax(settings);
 
     }
 

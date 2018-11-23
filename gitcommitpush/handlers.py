@@ -175,23 +175,31 @@ class GitCommitHandler(IPythonHandler):
             filename = urllib.parse.unquote(data['filename'])
             msg = data['msg']
             add_all = data['add_all']
-
-            git.pull()
-            git.add(filename, add_all)
-            git.commit(msg)
-            git.push()
-            #git_pr()
+            pull = data['pull']
+            if pull:
+                git.pull()
+                self.write(
+                    {'status': 200,
+                    'statusText': ('Success!  '
+                        'Pulled from {} everything up to date!'.format(
+                            git.url))
+                    })
+            else:
+                git.pull()
+                git.add(filename, add_all)
+                git.commit(msg)
+                git.push()
+                #git_pr()
+                # close connection
+                self.write(
+                    {'status': 200,
+                    'statusText': ('Success!  '
+                        'Changes to {} captured on branch {} at {}'.format(
+                            filename, git.branch_nm, git.url))
+                    })
 
             # return to directory
             os.chdir(cwd)
-
-            # close connection
-            self.write(
-                {'status': 200,
-                'statusText': ('Success!  '
-                    'Changes to {} captured on branch {} at {}'.format(
-                        filename, git.branch_nm, git.url))
-                })
         except ErrorPrintToJupyter as e:
             self.error_and_return(cwd, str(e).replace('\n', '</br> '))
 

@@ -1,10 +1,10 @@
 import setuptools
 
 setuptools.setup(
-    name="githubcommit",
+    name="gitcommitpush",
     version='0.1.0',
-    url="https://github.com/sat28/githubcommit",
-    author="Shaleen Anand Taneja",
+    url="https://github.com/openafox/githubcommit",
+    author="Shaleen Anand Taneja - major updates by Austin Fox",
     description="Jupyter extension to enable user push notebooks to a git repo",
     packages=setuptools.find_packages(),
     install_requires=[
@@ -12,5 +12,5 @@ setuptools.setup(
         'notebook',
         'gitpython'
     ],
-    package_data={'githubcommit': ['static/*']},
+    package_data={'gitcommitpush': ['static/*']},
 )

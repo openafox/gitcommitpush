@@ -58,7 +58,12 @@ class git_cnxn:
         try:
             print(self.repo.git.checkout('HEAD', b=self.branch_nm))
         except GitCommandError:
-            print("Switching to {}".format(self.repo.heads[self.branch_nm].checkout()))
+            try:
+                print("Switching to {}".format(self.repo.heads[self.branch_nm].checkout()))
+                #this will error if merge is needed just tell the user that...
+            except GitCommandError as e:
+                raise ErrorPrintToJupyter("{}".format(e))
+
         return self.branch_nm
 
     def select_or_create_remote(self):
